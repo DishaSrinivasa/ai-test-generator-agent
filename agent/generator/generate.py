@@ -50,6 +50,7 @@ def generate_tests(chroma_path: str = "./chroma_db", base_url: str = "http://loc
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": prompt},
             ],
+            options={"temperature": 0.2, "repeat_penalty": 1.3, "num_predict": 512},
         )
         code = response["message"]["content"].strip()
         # Strip markdown fences if the model added them

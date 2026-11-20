@@ -25,3 +25,8 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["ruff>=0.4.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["approved_tests"]
+python_files = ["test_*.py", "*_test.py", "*_tests.py"]
+norecursedirs = ["venv", ".git", "__pycache__", "chroma_db", "dist", "*.egg-info"]
