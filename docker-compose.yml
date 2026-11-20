@@ -1,0 +1,31 @@
+services:
+  sample-api:
+    build: .
+    ports:
+      - "8000:8000"
+    command: uvicorn sample_api.main:app --host 0.0.0.0 --port 8000
+
+  review-server:
+    build: .
+    ports:
+      - "9000:9000"
+    command: uvicorn agent.review.server:app --host 0.0.0.0 --port 9000
+    volumes:
+      - ./approved_tests:/app/approved_tests
+
+  agent:
+    build: .
+    depends_on:
+      - sample-api
+      - review-server
+    network_mode: host
+    volumes:
+      - ./chroma_db:/app/chroma_db
+      - ./approved_tests:/app/approved_tests
+    command: >
+      python -m agent.cli
+      --spec-url http://localhost:8000/openapi.json
+      --base-url http://localhost:8000
+      --review-url http://localhost:9000
+    profiles:
+      - run-agent

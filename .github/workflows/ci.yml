@@ -1,0 +1,35 @@
+name: Run Approved Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -e .
+
+      - name: Start sample API in background
+        run: |
+          uvicorn sample_api.main:app --host 0.0.0.0 --port 8000 &
+          sleep 3
+
+      - name: Run approved tests
+        run: |
+          if [ -d approved_tests ] && [ "$(ls -A approved_tests/*.py 2>/dev/null)" ]; then
+            python -m pytest approved_tests/ -v
+          else
+            echo "No approved tests yet — skipping."
+          fi

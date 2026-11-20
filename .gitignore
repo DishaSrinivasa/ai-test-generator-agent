@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+chroma_db/
+approved_tests/
+.env
+*.egg-info/
+dist/
